@@ -56,6 +56,8 @@ Para ejecutar el proyecto localmente se debe ejecutar el siguiente comando:
 docker-compose up --build
 ```
 
+Compruebe que el proyecto se ejecutó correctamente ingresando a `http://localhost` en su navegador.
+
 ## Ejecución local del proyecto
 
 Para ejecutar el proyecto localmente se debe dirigir a la carpeta `converter_app`. Desde allí debe crear un entorno virtual.
