@@ -19,10 +19,7 @@ services:
       DB_HOST: converter_db
       DB_PORT: 5432
       DB_PASSWORD: postgres
-      JWT_ALGORITHM: HS256
       JWT_SECRET_KEY: secret
-      JWT_TYPE: Bearer
-      JWT_NAME: Authorization
       CELERY_QUEUE: convertions
     depends_on:
       - converter_db

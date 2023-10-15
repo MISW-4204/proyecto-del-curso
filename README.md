@@ -103,10 +103,7 @@ La aplicación de FastAPI utiliza las siguientes variables de entorno:
 - **DB_PASSWORD**: Contraseña de la base de datos.
 - **DB_HOST**: Host de la base de datos.
 - **DB_PORT**: Puerto de la base de datos.
-- **JWT_ALGORITHM**: Algoritmo de encriptación de JWT.
 - **JWT_SECRET_KEY**: Llave secreta de JWT.
-- **JWT_TYPE**: Tipo de JWT.
-- **JWT_NAME**: Nombre del JWT.
 - **CELERY_QUEUE**: Nombre de la cola de tareas de Celery.
 
 La aplicación de Celery utiliza las siguientes variables de entorno:

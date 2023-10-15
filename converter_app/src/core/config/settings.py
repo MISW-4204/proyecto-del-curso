@@ -16,7 +16,4 @@ class Settings(BaseSettings):
         case_sensitive = True
 
 class AuthSettings(BaseSettings):
-    authjwt_algorithm: str = os.getenv('JWT_ALGORITHM')
     authjwt_secret_key:str = os.getenv('JWT_SECRET_KEY')
-    authjwt_header_type:str = os.getenv('JWT_TYPE')
-    authjwt_header_name:str = os.getenv('JWT_NAME')
