@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Settings(BaseSettings):
     DB_NAME: str = os.getenv("DB_NAME")
     DB_USER: str = os.getenv("DB_USER")
@@ -15,5 +16,6 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
 
+
 class AuthSettings(BaseSettings):
-    authjwt_secret_key:str = os.getenv('JWT_SECRET_KEY')
+    authjwt_secret_key: str = os.getenv("JWT_SECRET_KEY")
