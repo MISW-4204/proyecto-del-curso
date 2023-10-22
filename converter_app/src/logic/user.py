@@ -90,7 +90,7 @@ def validate_user_login(db: Session, user: UserLogin):
 
 
 def get_token(db_user: UserModel, Authorize: AuthJWT):
-    token = Authorize.create_access_token(subject=db_user.username)
+    token = Authorize.create_access_token(subject=db_user.id)
     return UserLoginSuccess(token=token)
 
 
