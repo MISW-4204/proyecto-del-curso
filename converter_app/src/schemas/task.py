@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class TaskBase(BaseModel):
@@ -18,10 +19,6 @@ class TaskInfo(BaseModel):
     url_destiny_file: str
 
 
-from datetime import datetime
-from pydantic import BaseModel
-
-
 class ConversionTaskBase(BaseModel):
     file_name: str
     original_file_extension: str
@@ -31,13 +28,13 @@ class ConversionTaskBase(BaseModel):
     process_state: str
 
 
-class ConversionTaskCreate:
+class ConversionTaskCreate(BaseModel):
     file_name: str
     original_file_extension: str
     target_file_extension: str
     available: bool = True
 
 
-class ConversionTaskCreateSuccess:
+class ConversionTaskCreateSuccess(BaseModel):
     id: int
     detail: str = "Conversion task created successfully"

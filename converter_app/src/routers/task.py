@@ -11,7 +11,11 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from src.db.db import get_db
 from src.logic.tasks import get_all_tasks
-from src.schemas.task import ConversionTaskBase, ConversionTaskCreateSuccess
+from src.schemas.task import (
+    ConversionTaskBase,
+    ConversionTaskCreateSuccess,
+    ConversionTaskCreate,
+)
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi import HTTPException
@@ -57,39 +61,33 @@ def get_delete_task_by_id(
 get_tasks_responses = {
     status.HTTP_401_UNAUTHORIZED: {
         "description": "Invalid credentials",
-        "content": {
-            "application/json": {"example": {{"detail": "Invalid credentials"}}}
-        },
+        "content": {"application/json": {"example": {"detail": "Invalid credentials"}}},
     },
     status.HTTP_404_NOT_FOUND: {
         "description": "Task not found",
-        "content": {"application/json": {"example": {{"detail": "Task not found"}}}},
+        "content": {"application/json": {"example": {"detail": "Task not found"}}},
     },
 }
 
 get_task_responses = {
     status.HTTP_401_UNAUTHORIZED: {
         "description": "Invalid credentials",
-        "content": {
-            "application/json": {"example": {{"detail": "Invalid credentials"}}}
-        },
+        "content": {"application/json": {"example": {"detail": "Invalid credentials"}}},
     },
     status.HTTP_404_NOT_FOUND: {
         "description": "Task not found",
-        "content": {"application/json": {"example": {{"detail": "Task not found"}}}},
+        "content": {"application/json": {"example": {"detail": "Task not found"}}},
     },
 }
 
 create_responses = {
-    status.HTTP_: {
+    status.HTTP_401_UNAUTHORIZED: {
         "description": "Invalid credentials",
-        "content": {
-            "application/json": {"example": {{"detail": "Invalid credentials"}}}
-        },
+        "content": {"application/json": {"example": {"detail": "Invalid credentials"}}},
     },
     status.HTTP_404_NOT_FOUND: {
         "description": "Task not found",
-        "content": {"application/json": {"example": {{"detail": "Task not found"}}}},
+        "content": {"application/json": {"example": {"detail": "Task not found"}}},
     },
 }
 
@@ -117,18 +115,6 @@ def get_conversion_tasks(
     return tasks
 
 
-@router.get(
-    "/",
-    status_code=status.HTTP_200_OK,
-    response_model=ConversionTaskList,
-    responses=get_task_responses,
-)
-def get_conversion_task(
-    current_user: AuthJWT = Depends(get_current_user), db: Session = Depends(get_db)
-):
-    pass
-
-
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
@@ -147,7 +133,7 @@ def create_conversion_task(
         buffer.write(file.file.read())
 
     # Create a new database entry with status "uploaded"
-    new_task = ConversionTask(
+    new_task = ConversionTaskCreate(
         filename=file.filename,
         timestamp=datetime.utcnow(),
         status="uploaded",
