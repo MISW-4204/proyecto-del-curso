@@ -10,4 +10,5 @@ def get_user_tasks(db: Session, user_id: int, limit: int = 100, order: int = 0):
 def delete_task_by_id(db: Session, id):
     task = db.query(Task).filter_by(id=id).first()
     task.delete()
+    task.commit()
     return task
