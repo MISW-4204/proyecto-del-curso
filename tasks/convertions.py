@@ -9,7 +9,6 @@ REDIS_PORT = settings.REDIS_PORT
 celery_app = Celery(__name__, broker=f"redis://{REDIS_HOST}:{REDIS_PORT}/0")
 
 
-
 @celery_app.task
 def convert_video(input_file: str, output_format: str) -> str:
     """
