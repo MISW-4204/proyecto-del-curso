@@ -1,12 +1,17 @@
-from fastapi import APIRouter, Depends, status, Request
+from typing import List
+
+from fastapi import APIRouter, Depends, status, Request, UploadFile, Form
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from sqlalchemy.orm import Session
 from src.db.db import get_db
-from src.schemas.task import ConversionTaskBase, ConversionTaskList, ConversionTaskCreateSuccess
+from src.logic.tasks import get_all_tasks
+from src.schemas.task import ConversionTaskBase, ConversionTaskCreateSuccess
 from fastapi_jwt_auth import AuthJWT
 from fastapi import HTTPException
-
+from fastapi import UploadFile, Form, HTTPException
+from datetime import datetime
+from src.models.task import Task
 from src.core.config.settings import AuthSettings
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -104,11 +109,17 @@ def get_current_user(Authorize: AuthJWT = Depends()):
 @router.get(
     "/",
     status_code=status.HTTP_200_OK,
-    response_model=ConversionTaskBase,
+    response_model=List[ConversionTaskBase],
     responses=get_tasks_responses
 )
-def get_conversion_tasks(current_user: AuthJWT = Depends(get_current_user)):
-    pass
+def get_conversion_tasks(
+        current_user: AuthJWT = Depends(get_current_user),
+        db: Session = Depends(get_db)
+):
+    # Implicitly the depends (get_current_user function will check for the JWT requirements)
+    tasks = get_all_tasks(db)
+
+    return tasks
 
 
 @router.get(
@@ -117,7 +128,10 @@ def get_conversion_tasks(current_user: AuthJWT = Depends(get_current_user)):
     response_model=ConversionTaskList,
     responses=get_task_responses
 )
-def get_conversion_task(current_user: AuthJWT = Depends(get_current_user)):
+def get_conversion_task(
+        current_user: AuthJWT = Depends(get_current_user),
+        db: Session = Depends(get_db)
+):
     pass
 
 
@@ -127,13 +141,34 @@ def get_conversion_task(current_user: AuthJWT = Depends(get_current_user)):
     response_model=ConversionTaskCreateSuccess,
     responses=create_responses
 )
-def create_conversion_task(current_user: AuthJWT = Depends(get_current_user)):
-    pass
+def create_conversion_task(
+        current_user: AuthJWT = Depends(get_current_user),
+        file: UploadFile = Form(...),
+        format: str = Form(...),
+        db: Session = Depends(get_db)
+):
+    # Extract the file
+    file_location = f"uploads/{file.filename}"
+    with open(file_location, "wb+") as buffer:
+        buffer.write(file.file.read())
+
+    # Create a new database entry with status "uploaded"
+    new_task = ConversionTask(
+        filename=file.filename,
+        timestamp=datetime.utcnow(),
+        status="uploaded",
+        desired_format=format
+    )
+    db.add(new_task)
+    db.commit()
 
 
 @router.delete(
     "/{task_id}",
     status_code=status.HTTP_204_NO_CONTENT
 )
-def delete_task(current_user: AuthJWT = Depends(get_current_user)):
+def delete_task(
+        current_user: AuthJWT = Depends(get_current_user),
+        db: Session = Depends(get_db)
+):
     return None
