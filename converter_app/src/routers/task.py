@@ -21,6 +21,7 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi import HTTPException
 from fastapi import UploadFile, Form, HTTPException
 from datetime import datetime
+from src.models.task import TaskState
 
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -100,21 +101,6 @@ def get_current_user(Authorize: AuthJWT = Depends()):
     return Authorize
 
 
-@router.get(
-    "/",
-    status_code=status.HTTP_200_OK,
-    response_model=List[ConversionTaskBase],
-    responses=get_tasks_responses,
-)
-def get_conversion_tasks(
-    current_user: AuthJWT = Depends(get_current_user), db: Session = Depends(get_db)
-):
-    # Implicitly the depends (get_current_user function will check for the JWT requirements)
-    tasks = get_all_tasks(db)
-
-    return tasks
-
-
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
@@ -132,19 +118,11 @@ def create_conversion_task(
     with open(file_location, "wb+") as buffer:
         buffer.write(file.file.read())
 
-    # Create a new database entry with status "uploaded"
     new_task = ConversionTaskCreate(
         filename=file.filename,
         timestamp=datetime.utcnow(),
-        status="uploaded",
+        status=TaskState.uploaded,
         desired_format=format,
     )
     db.add(new_task)
     db.commit()
-
-
-@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(
-    current_user: AuthJWT = Depends(get_current_user), db: Session = Depends(get_db)
-):
-    return None
