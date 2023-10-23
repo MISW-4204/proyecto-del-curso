@@ -18,14 +18,8 @@ from src.schemas.user import (
     UserResetSuccess,
 )
 from fastapi.responses import JSONResponse
-from fastapi_jwt_auth.exceptions import AuthJWTException
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-
-
-@AuthJWT.load_config
-def get_config():
-    return AuthSettings()
 
 
 signup_responses = {
