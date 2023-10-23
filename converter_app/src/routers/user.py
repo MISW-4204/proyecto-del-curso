@@ -22,9 +22,6 @@ from fastapi.responses import JSONResponse
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-
-
-
 signup_responses = {
     status.HTTP_409_CONFLICT: {
         "description": "Email or username already registered",

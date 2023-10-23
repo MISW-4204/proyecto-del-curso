@@ -1,0 +1,1234 @@
+{
+	"info": {
+		"_postman_id": "87ea3688-cb45-41ae-a157-46351e79aba4",
+		"name": "Video Converter API",
+		"description": "Esta es una API para convertir de un archivo de video de un formato a otro.\n\nPara poder usarla, primero debes registrarte y luego iniciar sesión.\n\nUna vez iniciada la sesión, puedes subir un archivo de video y convertirlo a otro formato.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27479771",
+		"_collection_link": "https://www.postman.com/dark-zodiac-951857/workspace/cloud/collection/14950540-87ea3688-cb45-41ae-a157-46351e79aba4?action=share&source=collection_link&creator=27479771"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Reset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required field 'detail'\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.detail).to.exist.and.to.be.a('string');",
+									"});",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/reset",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"reset"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/reset",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"reset"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"detail\": \"All users deleted successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Signup user with no matching passwords",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 422', function () {",
+									"    pm.response.to.have.status(422);",
+									"})",
+									"",
+									"pm.test('Response has the required field - detail', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist;",
+									"})",
+									"",
+									"pm.test('Verify that the error message is Passwords do not match', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.detail).to.be.equal('Passwords do not match');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.variables.replaceIn(\"{{$randomEmail}}\").toLowerCase();",
+									"const username = pm.variables.replaceIn(\"{{$randomUserName}}\");",
+									"pm.collectionVariables.set('USER_EMAIL', email);",
+									"pm.collectionVariables.set('USER_USERNAME', username);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}\",\n  \"email\": \"{{USER_EMAIL}}\",\n  \"password1\": \"Password123\",\n  \"password2\": \"Password124\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "One or more fields are invalid",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"email\": \"<string>\",\n  \"password1\": \"<string>\",\n  \"password2\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/signup",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Passwords do not match\"\n}\n"
+						}
+					]
+				},
+				{
+					"name": "Signup user with no strong password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 422', function () {",
+									"    pm.response.to.have.status(422);",
+									"})",
+									"",
+									"pm.test('Response has the required field - detail', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist;",
+									"})",
+									"",
+									"pm.test('Verify that the error message is Password is not strong enough. It must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.detail).to.be.equal('Password is not strong enough. It must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.variables.replaceIn(\"{{$randomEmail}}\").toLowerCase();",
+									"const username = pm.variables.replaceIn(\"{{$randomUserName}}\");",
+									"pm.collectionVariables.set('USER_EMAIL', email);",
+									"pm.collectionVariables.set('USER_USERNAME', username);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}\",\n  \"email\": \"{{USER_EMAIL}}\",\n  \"password1\": \"1234\",\n  \"password2\": \"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "One or more fields are invalid",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"email\": \"<string>\",\n  \"password1\": \"<string>\",\n  \"password2\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/signup",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Password is not strong enough. It must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number\"\n}\n"
+						}
+					]
+				},
+				{
+					"name": "Signup user with invalid email",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.variables.replaceIn(\"{{$randomEmail}}\").toLowerCase();",
+									"const username = pm.variables.replaceIn(\"{{$randomUserName}}\");",
+									"pm.collectionVariables.set('USER_EMAIL', email);",
+									"pm.collectionVariables.set('USER_USERNAME', username);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 422', function () {",
+									"    pm.expect(pm.response.code).to.equal(422);",
+									"})",
+									"",
+									"pm.test('Response has the required field - detail', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}\",\n  \"email\": \"{{USER_EMAIL}}INVALID\",\n  \"password1\": \"Password123\",\n  \"password2\": \"Password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "One or more fields are invalid",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"email\": \"<string>\",\n  \"password1\": \"<string>\",\n  \"password2\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/signup",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Email 'user_email' is not a valid email address\"\n}\n"
+						}
+					]
+				},
+				{
+					"name": "Signup User Successfully",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.variables.replaceIn(\"{{$randomEmail}}\").toLowerCase();",
+									"const username = pm.variables.replaceIn(\"{{$randomUserName}}\");",
+									"pm.collectionVariables.set('USER_EMAIL', email);",
+									"pm.collectionVariables.set('USER_USERNAME', username);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 201', function () {",
+									"    pm.expect(pm.response.code).to.equal(201);",
+									"})",
+									"",
+									"pm.test('Response has the required field - detail', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist;",
+									"})",
+									"",
+									"pm.test('User is successfully signed up', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist.and.to.equal('User created successfully');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}\",\n  \"email\": \"{{USER_EMAIL}}\",\n  \"password1\": \"Password123\",\n  \"password2\": \"Password123\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"email\": \"<string>\",\n  \"password1\": \"<string>\",\n  \"password2\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/signup",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"detail\": \"User created successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Signup user with already registered email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 409', function () {",
+									"    pm.response.to.have.status(409);",
+									"})",
+									"",
+									"pm.test('Response has the required field - detail', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist;",
+									"})",
+									"",
+									"pm.test('Verify that the response message contains Email', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.be.a('string').and.to.contain('Email');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}different\",\n  \"email\": \"{{USER_EMAIL}}\",\n  \"password1\": \"Password123\",\n  \"password2\": \"Password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Email or username already registered",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"email\": \"<string>\",\n  \"password1\": \"<string>\",\n  \"password2\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/signup",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Email 'user_email' already registered\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Signup user with already registered username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 409', function () {",
+									"    pm.response.to.have.status(409);",
+									"})",
+									"",
+									"pm.test('Response has the required field - detail', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist;",
+									"})",
+									"",
+									"pm.test('Verify that the error message contains Username', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.detail).to.contain('Username');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}\",\n  \"email\": \"different{{USER_EMAIL}}\",\n  \"password1\": \"Password123\",\n  \"password2\": \"Password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Email or username already registered",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"email\": \"<string>\",\n  \"password1\": \"<string>\",\n  \"password2\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/signup",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Username 'user_username' already registered\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login with invalid credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 401', function () {",
+									"    pm.response.to.have.status(401);",
+									"})",
+									"",
+									"pm.test('Response has the required field - detail', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.detail).to.exist;",
+									"})",
+									"",
+									"pm.test('Verify that the error message is Invalid credentials', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.detail).to.be.equal('Invalid credentials');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}\",\n  \"password\": \"WrongPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Invalid credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Invalid credentials\"\n}\n"
+						}
+					]
+				},
+				{
+					"name": "Login User Successfully",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required field - token\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.token).to.exist;",
+									"  pm.collectionVariables.set(\"BEARER_TOKEN\", responseData.token);",
+									"});",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{USER_USERNAME}}\",\n  \"password\": \"Password123\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"token\": \"<string>\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Get all tasks unauthorized",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tasks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get all tasks unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/tasks",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"tasks"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Get all tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tasks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get all tasks",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/tasks",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"tasks"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"file_name\": \"string\",\n        \"original_file_extension\": \"string\",\n        \"target_file_extension\": \"string\",\n        \"upload_timestamp\": \"2023-10-22T22:16:30.712Z\",\n        \"process_state\": \"string\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get task with unexistent id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ping",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required field 'detail'\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.have.property('detail');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"detail\": \"pong\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "localhost"
+		},
+		{
+			"key": "USER_EMAIL",
+			"value": ""
+		},
+		{
+			"key": "USER_USERNAME",
+			"value": ""
+		},
+		{
+			"key": "BEARER_TOKEN",
+			"value": ""
+		}
+	]
+}
